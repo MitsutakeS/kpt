@@ -1,6 +1,16 @@
 #pragma once
 #include "Python310/include/Python.h"/* <== first include */
 
+#define STR_HPP 1
+// #include
+// #ifdef STR_HPP
+    // #define XXX
+// #endif
+// #ifdef XXX
+    // processing
+// #endif
+/* |^| example |^| */
+
 
 #define print(values) (std::cout << values << std::endl)
 #define FILE_EXISTS ()
@@ -82,5 +92,56 @@ Py_InitializeEX()を使用。意図的に閉じる場合に気をつけてくだ
     };
 }
 namespace kpt {
-    
+    // BigBoss...
+    class str {
+        private:
+            std::string memory;
+        public:
+            str();
+            str(const str& value);
+            str(const std::string& value);
+            str(const char& value);
+            str(const PyObject* value);
+            str(const _bstr_t& value);
+            str(const wchar_t* value);
+#if __has_include(<jni.h>)
+            str(const jstring& value);
+            operator jstring() const;
+            str & operator=(const jstring& value);
+#endif
+            str& operator=(const str& value);
+            str operator+(const str& value);
+            str& operator+=(const str& value);
+            bool operator==(const str& value);
+            bool operator!=(const str& value);
+
+            str& operator=(const std::string& value);
+            str operator+(const std::string& value);
+            str& operator+=(const std::string& value);
+            bool operator==(const std::string& value);
+            bool operator!=(const std::string& value);
+
+            str& operator=(const char& value);
+            str operator +(const char& value);
+            str& operator+=(const char& value);
+            bool operator==(const char& value);
+            bool operator!=(const char& value);
+
+            str& operator=(PyObject* value);
+            str operator+(PyObject* value);
+            str& operator+=(PyObject* value);
+            bool operator==(PyObject* value);
+            bool operator!=(PyObject* value);
+
+            operator str() const;
+            operator std::string() const;
+            operator std::wstring() const;
+            operator _bstr_t() const;
+            operator const wchar_t*() const;
+            operator PyObject*() const;
+
+
+
+
+    };
 }

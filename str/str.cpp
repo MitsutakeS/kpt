@@ -1,7 +1,5 @@
 #include "str.hpp"
 
-
-
 kpt::PyInterpreter::PyInterpreter() {
     Py_InitializeEx(0);
 }
@@ -96,7 +94,6 @@ std::string kpt::bstr_str_object::_comstr_to_string() {
     return static_cast<const char*>(bstr);
 }
 
-const wchar_t kpt::wide_char_object::*wct;
 kpt::wide_char_object::wide_char_object() {
     const wchar_t* wct;
 }
@@ -174,12 +171,19 @@ class str {
         str operator+(const str& value) {
             return str(memory + value.memory);
         }
-        str operator+=(const str& value) {
+        str& operator+=(const str& value) {
             memory = memory + value.memory;
-            return memory;
+            return *this;
         }
-        str operator==(const str& value) {
+        bool operator==(const str& value) {
             if (memory == value.memory) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        bool operator!=(const str & value) {
+            if (memory != value.memory) {
                 return true;
             } else {
                 return false;
@@ -201,16 +205,19 @@ class str {
         }
 
         operator _bstr_t() const {
-            bstr_str_object b = memory;
+            kpt::bstr_str_object b = memory;
             return b._string_to_comstr();
         }
-        operator const wchar_t*() {
-            wide_char_object w = memory;
+        operator const wchar_t*() const {
+            kpt::wide_char_object w = memory;
             return w._string_to_wchar();
         }
-        operator std::wstring() {
-            wide_char_object w = memory;
+        operator std::wstring() const {
+            kpt::wide_char_object w = memory;
             return w._string_to_wchar();
+        }
+        operator str() const {
+            return *this;
         }
 
         str(const std::string& value) {
@@ -220,13 +227,28 @@ class str {
             memory = value;
             return *this;
         }
-        std::string operator+(const std::string& value) {
-            return memory + value;
+        str operator+(const std::string& value) {
+            return str(memory + value);
         }
-        std::string operator+=(const std::string& value) {
+        str& operator+=(const std::string& value) {
             memory = memory + value;
-            return memory;
+            return *this;
         }
+        bool operator==(const std::string& value) {
+            if (memory == value) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        bool operator!=(const std::string& value) {
+            if (memory != value) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         str(const char& value) {
             memory = value;
         }
@@ -241,50 +263,92 @@ class str {
             memory = value;
             return *this;
         }
-#ifdef JNI_H
-        operator jstring() const {
-            java_env_object v = memory;
-            return v._string_to_jstring();
+        str operator+(const char& value) {
+            return str(memory + str(value).memory);
         }
-        operator PyObject*() const {
-            python_env_object p = memory;
-            return p._string_to_pystr();
-        }
-        str(const jstring& value) {
-            java_env_object v;
-            memory = v._jstring_to_string(value);
-        }
-        str& operator=(const jstring& value) {
-            java_env_object v;
-            memory = v._jstring_to_string(value);
+        str& operator+=(const char& value) {
+            memory =  memory + str(value).memory;
             return *this;
         }
-#endif
-        str(PyObject* value) {
-            python_env_object p;
-            memory = p._pystr_to_string(value);
+        bool operator==(const char& value) {
+            if (memory == str(value).to_cstring()) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        str& operator=(PyObject* value) {
-            python_env_object p;
-            memory = p._pystr_to_string(value);
+        bool operator!=(const char& value) {
+            if (memory != str(value).memory) {
+                return true;
+            }  else {
+                return false;
+            }
+        }
+        str(const jstring& value) {
+            kpt::java_env_object v;
+            memory = v._jstring_to_string(value);
+        }
+        operator jstring() const {
+            kpt::java_env_object v = memory;
+            return v._string_to_jstring();
+        }
+        str& operator=(const jstring& value) {
+            kpt::java_env_object v;
+            memory = v._jstring_to_string(value);
             return *this;
         }
 
+        operator PyObject*() const {
+            kpt::python_env_object p = memory;
+            return p._string_to_pystr();
+        }
+
+
+        str(PyObject* value) {
+            kpt::python_env_object p;
+            memory = p._pystr_to_string(value);
+        }
+        str& operator=(PyObject* value) {
+            memory = str(value).memory;
+            return *this;
+        }
+        str operator+(PyObject* value) {
+            return memory + str(value).memory;
+        }
+        str& operator+=(PyObject* value) {
+            memory = memory + str(value).memory;
+            return *this;
+        }
+        bool operator==(PyObject* value) {
+            if (memory == str(value).memory) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        bool operator!=(PyObject* value) {
+            if (memory != str(value).memory) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         str(const _bstr_t& value) {
-            bstr_str_object b;
+            kpt::bstr_str_object b;
             memory = b._comstr_to_string(value);
         }
         str& operator=(const _bstr_t& value) {
-            bstr_str_object b;
+            kpt::bstr_str_object b;
             memory = b._comstr_to_string(value);
             return *this;
         }
         str(const wchar_t* value) {
-            wide_char_object w;
+            kpt::wide_char_object w;
             memory = w._wchar_to_string(value);
         }
         str& operator=(const wchar_t* value) {
-            wide_char_object w;
+            kpt::wide_char_object w;
             memory = w._wchar_to_string(value);
             return *this;
         }
