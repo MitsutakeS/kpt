@@ -138,255 +138,334 @@ std::string kpt::wide_char_object::_wchar_to_string() {
     return s;
 }
 
-class str {
-    private:
-        std::string memory;
-
-    public:
-        str() {
-            std::string memory;
-            memory = "\0";
-        }
-        /* 宣言時に代入値がstr型だった際の左辺コピーコンストラクタ */
-        str(const str& value) {
-            if (this != &value) {
-                memory = value.memory;
-            } else {
-                std::cerr << "Self-assignment: assignments that may break objects.\n";
-            }
-        }
-        /*
-        宣言時以外で代入値がstr型だった際の左辺オーバーロード
-        右辺から受け取り左辺に自身のオブジェクトを返す
-        ====================================================
-        Left-hand side overloading when the assigned value is of type str except when declaring
-        Returns its own object on the left-hand side.
-        */
-        str& operator=(const str& value) {
-            if (this != &value) {
-                memory = value.memory;
-            }
-            return *this;
-        }
-        str operator+(const str& value) {
-            return str(memory + value.memory);
-        }
-        str& operator+=(const str& value) {
-            memory = memory + value.memory;
-            return *this;
-        }
-        bool operator==(const str& value) {
-            if (memory == value.memory) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        bool operator!=(const str & value) {
-            if (memory != value.memory) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        /*
-        左辺が~~型だった際のstr型からの暗黙的な型キャスト
-        operator ~~() const {左辺に返す値(左辺の型と等しい型)}
-        ====================================================
-        Implicit typecast from type str when the left-hand side is of type ~~
-        operator ~~() const {value to return on the left-hand side -type equal to the type of the left-hand side-}
-        */
-        operator std::string() const {
-            return memory;
-        }
-
-        operator const char*() const {
-            return memory.c_str();
-        }
-
-        operator _bstr_t() const {
-            kpt::bstr_str_object b = memory;
-            return b._string_to_comstr();
-        }
-        operator const wchar_t*() const {
-            kpt::wide_char_object w = memory;
-            return w._string_to_wchar();
-        }
-        operator std::wstring() const {
-            kpt::wide_char_object w = memory;
-            return w._string_to_wchar();
-        }
-        operator str() const {
-            return *this;
-        }
-
-        str(const std::string& value) {
-            memory = value;
-        }
-        str& operator=(const std::string& value) {
-            memory = value;
-            return *this;
-        }
-        str operator+(const std::string& value) {
-            return str(memory + value);
-        }
-        str& operator+=(const std::string& value) {
-            memory = memory + value;
-            return *this;
-        }
-        bool operator==(const std::string& value) {
-            if (memory == value) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        bool operator!=(const std::string& value) {
-            if (memory != value) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        str(const char& value) {
-            memory = value;
-        }
-        str& operator=(const char& value) {
-            memory = value;
-            return *this;
-        }
-        str(const char* value) {
-            memory = value;
-        }
-        str& operator=(const char* value) {
-            memory = value;
-            return *this;
-        }
-        str operator+(const char& value) {
-            return str(memory + str(value).memory);
-        }
-        str& operator+=(const char& value) {
-            memory =  memory + str(value).memory;
-            return *this;
-        }
-        bool operator==(const char& value) {
-            if (memory == str(value).to_cstring()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        bool operator!=(const char& value) {
-            if (memory != str(value).memory) {
-                return true;
-            }  else {
-                return false;
-            }
-        }
-        str(const jstring& value) {
-            kpt::java_env_object v;
-            memory = v._jstring_to_string(value);
-        }
-        operator jstring() const {
-            kpt::java_env_object v = memory;
-            return v._string_to_jstring();
-        }
-        str& operator=(const jstring& value) {
-            kpt::java_env_object v;
-            memory = v._jstring_to_string(value);
-            return *this;
-        }
-
-        operator PyObject*() const {
-            kpt::python_env_object p = memory;
-            return p._string_to_pystr();
-        }
 
 
-        str(PyObject* value) {
-            kpt::python_env_object p;
-            memory = p._pystr_to_string(value);
-        }
-        str& operator=(PyObject* value) {
-            memory = str(value).memory;
-            return *this;
-        }
-        str operator+(PyObject* value) {
-            return memory + str(value).memory;
-        }
-        str& operator+=(PyObject* value) {
-            memory = memory + str(value).memory;
-            return *this;
-        }
-        bool operator==(PyObject* value) {
-            if (memory == str(value).memory) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-        bool operator!=(PyObject* value) {
-            if (memory != str(value).memory) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        str(const _bstr_t& value) {
-            kpt::bstr_str_object b;
-            memory = b._comstr_to_string(value);
-        }
-        str& operator=(const _bstr_t& value) {
-            kpt::bstr_str_object b;
-            memory = b._comstr_to_string(value);
-            return *this;
-        }
-        str(const wchar_t* value) {
-            kpt::wide_char_object w;
-            memory = w._wchar_to_string(value);
-        }
-        str& operator=(const wchar_t* value) {
-            kpt::wide_char_object w;
-            memory = w._wchar_to_string(value);
-            return *this;
-        }
-        ~str() {
-        }
-        std::string to_cstring() {
-            return memory;
-        }
-        size_t size() {
-            return memory.size();
-        }
-        size_t max_size() {
-            return memory.max_size();
-        }
-        char operator[](int value) {
-            return memory[value];
-        }
-        str split(const char& LiteralString) {
-            return *this;
-        }
-        static int to_int(char number) {
-            str n = number;
-            if (n.size() == 1) {
-                return number - '0';
-            } else {
-                return;
-            }
-        }
-
-        friend std::ostream& operator<< (std::ostream& stream, const str& value);
-    protected:
-
-};
-std::ostream& operator<< (std::ostream& stream, const str& value) {
-    stream << value.memory; // 文字列の内容を出力
-    return stream; // ストリームを返す
+kpt::str::str() {
+    std::string memory;
+    memory = "\0";
 }
-int main(int argc, char* argv[]) {
-    std::cout << str::to_int('12') << std::endl;
-    return 0;
+kpt::str::operator str() const {
+    return *this;
+}
+/* 宣言時に代入値がstr型だった際の左辺コピーコンストラクタ */
+kpt::str::str(const str& value) {
+    if (this != &value) {
+        memory = value.memory;
+    } else {
+        std::cerr << "Self-assignment: assignments that may break objects.\n";
+    }
+}
+/*
+宣言時以外で代入値がstr型だった際の左辺オーバーロード
+右辺から受け取り左辺に自身のオブジェクトを返す
+====================================================
+Left-hand side overloading when the assigned value is of type str except when declaring
+Returns its own object on the left-hand side.
+*/
+kpt::str& kpt::str::operator=(const kpt::str& value) {
+    if (this != &value) {
+        memory = value.memory;
+    }
+    return *this;
+}
+kpt::str kpt::str::operator+(const kpt::str& value) {
+    return str(memory + value.memory);
+}
+kpt::str& kpt::str::operator+=(const kpt::str& value) {
+    memory = memory + value.memory;
+    return *this;
+}
+bool kpt::str::operator==(const kpt::str& value) {
+    if (memory == value.memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const kpt::str& value) {
+    if (memory != value.memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+/*
+左辺が~~型だった際のstr型からの暗黙的な型キャスト
+operator ~~() const {左辺に返す値(左辺の型と等しい型)}
+====================================================
+Implicit typecast from type str when the left-hand side is of type ~~
+operator ~~() const {value to return on the left-hand side -type equal to the type of the left-hand side-}
+*/
+kpt::str::operator std::string() const {
+    return kpt::str::memory;
+}
+
+kpt::str::operator const char*() const {
+    return this->memory.c_str();
+}
+
+kpt::str::operator _bstr_t() const {
+    kpt::bstr_str_object b = memory;
+    return b._string_to_comstr();
+}
+kpt::str::operator const wchar_t*() const {
+    kpt::wide_char_object w = kpt::str::memory;
+    return w._string_to_wchar();
+}
+kpt::str::operator std::wstring() const {
+    kpt::wide_char_object w = kpt::str::memory;
+    return w._string_to_wchar();
+}
+kpt::str::operator kpt::str() const {
+    return *this;
+}
+
+kpt::str::str(const std::string& value) {
+    kpt::str::memory = value;
+}
+kpt::str& kpt::str::operator=(const std::string& value) {
+    kpt::str::memory = value;
+    return *this;
+}
+kpt::str kpt::str::operator+(const std::string& value) {
+    return kpt::str(kpt::str::memory + value);
+}
+kpt::str& kpt::str::operator+=(const std::string& value) {
+    kpt::str::memory = kpt::str::memory + value;
+    return *this;
+}
+bool kpt::str::operator==(const std::string& value) {
+    if (kpt::str::memory == value) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const std::string& value) {
+    if (kpt::str::memory != value) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+kpt::str::str(const char* value) {
+    kpt::str::memory = value;
+}
+kpt::str& kpt::str::operator=(const char* value) {
+    kpt::str::memory = value;
+    return *this;
+}
+kpt::str kpt::str::operator+(const char* value) {
+    return kpt::str::memory + kpt::str(value).memory;
+}
+kpt::str& kpt::str::operator+=(const char* value) {
+    kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+bool kpt::str::operator==(const char* value) {
+    if (kpt::str::memory == kpt::str(value).to_cstring()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const char* value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    }  else {
+        return false;
+    }
+}
+kpt::str::str(const char& value) {
+    kpt::str::memory = value;
+}
+kpt::str::operator const char&() const {
+    return *kpt::str::memory.c_str();
+}
+kpt::str& kpt::str::operator=(const char& value) {
+    kpt::str::memory = value;
+    return *this;
+}
+kpt::str kpt::str::operator+(const char& value) {
+    return kpt::str(memory + kpt::str(value).memory);
+}
+kpt::str& kpt::str::operator+=(const char& value) {
+    kpt::str::memory =  kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+bool kpt::str::operator==(const char& value) {
+    if (kpt::str::memory == kpt::str(value).to_cstring()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const char& value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    }  else {
+        return false;
+    }
+}
+#ifdef J_N_I/* JNIが環境に無い場合はコンパイルしない */
+    kpt::str::str(const jstring& value) {
+        kpt::java_env_object v;
+        kpt::str::memory = v._jstring_to_string(value);
+    }
+    kpt::str::operator jstring() const {
+        kpt::java_env_object v = memory;
+        return v._string_to_jstring();
+    }
+    kpt::str& kpt::str::operator=(const jstring& value) {
+        kpt::java_env_object v;
+        memory = v._jstring_to_string(value);
+        return *this;
+    }
+    kpt::str kpt::str::operator+(const jstring& value) {
+        return kpt::str::memory + str(value).memory;
+    }
+    kpt::str& kpt::str::operator+=(const jstring& value) {
+        kpt::str::memory = kpt::str::memory + str(value).memory;
+        return *this;
+    }
+    bool kpt::str::operator==(const jstring& value) {
+        if (kpt::str::memory == kpt::str(value).to_cstring()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    bool kpt::str::operator!=(const jstring& value) {
+        if (kpt::str::memory != kpt::str(value).memory) {
+            return true;
+        }  else {
+            return false;
+        }
+    }
+#endif
+kpt::str::operator PyObject*() const {
+    kpt::python_env_object p = kpt::str::memory;
+    return p._string_to_pystr();
+}
+
+
+kpt::str::str(PyObject* value) {
+    kpt::python_env_object p;
+    kpt::str::memory = p._pystr_to_string(value);
+}
+kpt::str& kpt::str::operator=(PyObject* value) {
+    kpt::str::memory = kpt::str(value).memory;
+    return *this;
+}
+kpt::str kpt::str::operator+(PyObject* value) {
+    return kpt::str::memory + kpt::str(value).memory;
+}
+kpt::str& kpt::str::operator+=(PyObject* value) {
+    kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+bool kpt::str::operator==(PyObject* value) {
+    if (kpt::str::memory == kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(PyObject* value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+kpt::str::str(const _bstr_t& value) {
+    kpt::bstr_str_object b;
+    kpt::str::memory = b._comstr_to_string(value);
+}
+kpt::str& kpt::str::operator=(const _bstr_t& value) {
+    kpt::str::memory = str(value).memory;
+    return *this;
+}
+kpt::str kpt::str::operator+(const _bstr_t&  value) {
+    return kpt::str::memory + str(value).memory;
+}
+kpt::str& kpt::str::operator+=(const _bstr_t& value) {
+    kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+
+bool kpt::str::operator==(const _bstr_t& value) {
+    if (kpt::str::memory == kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const _bstr_t& value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+kpt::str::str(const wchar_t* value) {
+    kpt::wide_char_object w;
+    kpt::str::memory = w._wchar_to_string(value);
+}
+kpt::str& kpt::str::operator=(const wchar_t* value) {
+    kpt::wide_char_object w;
+    kpt::str::memory = w._wchar_to_string(value);
+    return *this;
+}
+kpt::str kpt::str::operator+(const wchar_t* value) {
+    return kpt::str::memory + kpt::str(value).memory;
+}
+kpt::str& kpt::str::operator+=(const wchar_t* value) {
+    kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+bool kpt::str::operator==(const wchar_t* value) {
+    if (kpt::str::memory == kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const wchar_t* value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+kpt::str::~str() {
+}
+
+std::string kpt::str::to_cstring() {
+    return this->memory;
+}
+size_t kpt::str::size() {
+    return this->memory.size();
+}
+size_t kpt::str::max_size() {
+    return this->memory.max_size();
+}
+char kpt::str::operator[](int value) {
+    return this->memory[value];
+}
+
+static int to_one_digit_int(char number) {
+    kpt::str n = number;
+    if (n.size() == 1) {
+        return number - '0';
+    } else {
+        return;
+    }
+}
+std::ostream& kpt::operator<< (std::ostream& stream, const kpt::str& value) {
+    stream << value.memory; // 文字列の内容を出力
+    return stream;
 }

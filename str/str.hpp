@@ -98,50 +98,89 @@ namespace kpt {
             std::string memory;
         public:
             str();
-            str(const str& value);
-            str(const std::string& value);
-            str(const char& value);
-            str(const PyObject* value);
-            str(const _bstr_t& value);
-            str(const wchar_t* value);
+
+            char operator[](int value);
+
 #if __has_include(<jni.h>)
+#define J_N_I 1
             str(const jstring& value);
             operator jstring() const;
             str & operator=(const jstring& value);
+            str operator+(const jstring& value);
+            str& operator+=(const jstring& value);
+            bool operator==(const jstring& value);
+            bool operator!=(const jstring& value);
 #endif
+            str(const str& value);
+            operator str() const;
             str& operator=(const str& value);
             str operator+(const str& value);
             str& operator+=(const str& value);
             bool operator==(const str& value);
             bool operator!=(const str& value);
 
+            str(const std::string& value);
             str& operator=(const std::string& value);
             str operator+(const std::string& value);
             str& operator+=(const std::string& value);
             bool operator==(const std::string& value);
             bool operator!=(const std::string& value);
 
+            str(const char* value);
+            operator const char *() const;
+            str& operator=(const char* value);
+            str operator+(const char* value);
+            str& operator+=(const char* value);
+            bool operator==(const char* value);
+            bool operator!=(const char* value);
+
+            str(const char& value);
+            operator const char&() const;
             str& operator=(const char& value);
             str operator +(const char& value);
             str& operator+=(const char& value);
             bool operator==(const char& value);
             bool operator!=(const char& value);
 
+            str(PyObject* value);
             str& operator=(PyObject* value);
             str operator+(PyObject* value);
             str& operator+=(PyObject* value);
             bool operator==(PyObject* value);
             bool operator!=(PyObject* value);
 
-            operator str() const;
+            str(const _bstr_t& value);
+            str& operator=(const _bstr_t& value);
+            str operator+(const _bstr_t&  value);
+            str& operator+=(const _bstr_t& value);
+            bool operator==(const _bstr_t& value);
+            bool operator!=(const _bstr_t& value);
+
+            str(const wchar_t* value);
+            str& operator=(const wchar_t* value);
+            str operator+(const wchar_t* value);
+            str& operator+=(const wchar_t* value);
+            bool operator==(const wchar_t* value);
+            bool operator!=(const wchar_t* value);
+
+
+
             operator std::string() const;
             operator std::wstring() const;
             operator _bstr_t() const;
             operator const wchar_t*() const;
             operator PyObject*() const;
 
+            size_t size() {
+                return memory.size();
+            }
+            size_t max_size() {
+                return memory.max_size();
+            }
+            std::string to_cstring();
 
-
-
+            static int to_one_digit_int(char number);
+            friend std::ostream& operator<< (std::ostream& stream, const str& value);
     };
+    std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
 }
