@@ -78,3 +78,75 @@ std::string kpt::bstr_str_object::_bstr_to_string() {
 std::string kpt::bstr_str_object::_bstr_to_string(const BSTR& pre_conv_str) {
     return wide_char_object((const wchar_t*)pre_conv_str)._wchar_to_string();
 }
+
+
+kpt::u16_str_object::u16_str_object() {
+    kpt::u16_str_object::u16 = u"\0";
+}
+kpt::u16_str_object::u16_str_object(const std::u16string& value) {
+    kpt::u16_str_object::u16 = value;
+}
+kpt::u16_str_object::u16_str_object(const std::string& value) {
+    kpt::u16_str_object::u16 = _string_to_u16(value);
+}
+kpt::u16_str_object::~u16_str_object() {
+}
+void kpt::u16_str_object::operator=(const std::u16string& value) {
+    kpt::u16_str_object::u16 = value;
+    return;
+}
+void kpt::u16_str_object::operator=(const std::string& value) {
+    kpt::u16_str_object::u16 = this->_string_to_u16(value);
+    return;
+}
+std::u16string kpt::u16_str_object::_string_to_u16() {
+    return kpt::u16_str_object::u16;
+}
+std::u16string kpt::u16_str_object::_string_to_u16(const std::string& value) {
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> converter;
+    u16 = converter.from_bytes(value);
+    return u16;
+}
+std::string kpt::u16_str_object::_u16_to_string() {
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> converter;
+    return converter.to_bytes(u16);
+}
+std::string kpt::u16_str_object::_u16_to_string(const std::u16string& value) {
+    u16 = value;
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,char16_t> converter;
+    return converter.to_bytes(u16);
+}
+
+kpt::int_str_object::int_str_object() {
+    kpt::int_str_object::integer = 0;
+}
+kpt::int_str_object::int_str_object(const int& value) {
+    kpt::int_str_object::integer = value;
+}
+kpt::int_str_object::int_str_object(const std::string& value) {
+    kpt::int_str_object::integer = _string_to_int(value);
+}
+kpt::int_str_object::~int_str_object() {
+}
+void kpt::int_str_object::operator=(const int& value) {
+    kpt::int_str_object::integer = value;
+    return;
+}
+void kpt::int_str_object::operator=(const std::string& value) {
+    kpt::int_str_object::integer = this->_string_to_int(value);
+    return;
+}
+int kpt::int_str_object::_string_to_int() {
+    return integer;
+}
+int kpt::int_str_object::_string_to_int(const std::string& value) {
+    integer = std::stoi(value);
+    return integer;
+}
+std::string kpt::int_str_object::_int_to_string() {
+    return std::to_string(integer);
+}
+std::string kpt::int_str_object::_int_to_string(const int& value) {
+    integer = value;
+    return std::to_string(value);
+}

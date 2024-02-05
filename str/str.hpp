@@ -136,6 +136,19 @@ namespace kpt {
             bool operator==(const wchar_t* value);
             bool operator!=(const wchar_t* value);
 
+            str(const int& value);
+            str& operator=(const int& value);
+            str operator+(const int& value);
+            str& operator+=(const int& value);
+            bool operator==(const int& value);
+            bool operator!=(const int& value);
+
+            str(const std::u16string& value);
+            str& operator=(const std::u16string& value);
+            str operator+(const std::u16string& value);
+            str& operator+=(const std::u16string& value);
+            bool operator==(const std::u16string& value);
+            bool operator!=(const std::u16string& value);
 
 
             operator std::string() const;
@@ -143,6 +156,8 @@ namespace kpt {
             operator BSTR() const;
             operator const wchar_t*() const;
             operator PyObject*() const;
+            operator int() const;
+            operator std::u16string() const;
 
             size_t size();
             size_t max_size();

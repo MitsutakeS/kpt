@@ -358,6 +358,77 @@ bool kpt::str::operator!=(const wchar_t* value) {
         return false;
     }
 }
+kpt::str::str(const int& value) {
+    kpt::int_str_object i;
+    kpt::str::memory = i._int_to_string(value);
+}
+kpt::str& kpt::str::operator=(const int& value) {
+    kpt::int_str_object i;
+    kpt::str::memory = i._int_to_string(value);
+    return *this;
+}
+kpt::str kpt::str::operator+(const int& value) {
+    return kpt::str::memory + kpt::str(value).memory;
+}
+kpt::str& kpt::str::operator+=(const int& value) {
+    kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+bool kpt::str::operator==(const int& value) {
+    if (kpt::str::memory == kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const int& value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+kpt::str::str(const std::u16string& value) {
+    kpt::u16_str_object u;
+    kpt::str::memory = u._u16_to_string(value);
+}
+kpt::str& kpt::str::operator=(const std::u16string& value) {
+    kpt::u16_str_object u;
+    kpt::str::memory = u._u16_to_string(value);
+    return *this;
+}
+kpt::str kpt::str::operator+(const std::u16string& value) {
+    return kpt::str::memory + kpt::str(value).memory;
+}
+kpt::str& kpt::str::operator+=(const std::u16string& value) {
+    kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
+    return *this;
+}
+bool kpt::str::operator==(const std::u16string& value) {
+    if (kpt::str::memory == kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const std::u16string& value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+kpt::str::operator std::u16string() const {
+    kpt::u16_str_object u16_s = memory;
+    return u16_s._string_to_u16();
+}
+
+kpt::str::operator int() const {
+    kpt::int_str_object inst = memory;
+    return inst._string_to_int();
+}
+
 kpt::str::~str(){
 }
 

@@ -45,5 +45,35 @@ namespace kpt {
             std::string _bstr_to_string();
             std::string _bstr_to_string(const BSTR& pre_conv_str);
     };
+    class u16_str_object {
+        private:
+            std::u16string u16;
+        public:
+            u16_str_object();
+            u16_str_object(const std::u16string& value);
+            u16_str_object(const std::string& value);
+            ~u16_str_object();
+            void operator=(const std::u16string& value);
+            void operator=(const std::string& value);
+            std::u16string _string_to_u16();
+            std::u16string _string_to_u16(const std::string& value);
+            std::string _u16_to_string();
+            std::string _u16_to_string(const std::u16string& value);
+    };
+    class int_str_object {
+        private:
+            int integer;
+        public:
+            int_str_object();
+            int_str_object(const int& value);
+            int_str_object(const std::string& value);
+            ~int_str_object();
+            void operator=(const int& value);
+            void operator=(const std::string& value);
+            int _string_to_int();
+            int _string_to_int(const std::string& value);
+            std::string _int_to_string();
+            std::string _int_to_string(const int& value);
+    };
 }
 #endif
