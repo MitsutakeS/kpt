@@ -1,4 +1,11 @@
+#ifndef GARD_STRING
+    #define GARD_STRING
+    #include <string>
+#else
+#endif
+
 #if __has_include(<jni.h>)
+#define JNI_H
 #include <jni.h>
 namespace kpt {
 /*

@@ -7,7 +7,6 @@ kpt::PyInterpreter::~PyInterpreter() {
     Py_FinalizeEx();
 }
 
-
 kpt::python_env_object::python_env_object() {
     pystr = PyUnicode_FromStringAndSize(NULL, 0);
 }
@@ -59,84 +58,6 @@ PyObject* kpt::python_env_object::_string_to_pystr(const std::string cpp_str) {
     return pystr;
 }
 
-kpt::bstr_str_object::bstr_str_object() {
-    // デフォルトコンストラクタを呼び出す
-    bstr = "0";
-}
-kpt::bstr_str_object::bstr_str_object(const _bstr_t& value) {
-    bstr = value;
-}
-kpt::bstr_str_object::bstr_str_object(const std::string& value) {
-    bstr = this->_string_to_comstr(value);
-}
-kpt::bstr_str_object::~bstr_str_object() {
-    bstr.~_bstr_t();
-}
-void kpt::bstr_str_object::operator=(const _bstr_t& value) {
-    bstr = value;
-    return;
-}
-void kpt::bstr_str_object::operator=(const std::string& value) {
-    bstr = this->_string_to_comstr(value);
-    return;
-}
-_bstr_t kpt::bstr_str_object::_string_to_comstr(const std::string& pre_conv_str) {
-    bstr = pre_conv_str.c_str();
-    return bstr;
-}
-_bstr_t kpt::bstr_str_object::_string_to_comstr() {
-    return bstr;
-}
-std::string kpt::bstr_str_object::_comstr_to_string(const _bstr_t& pre_conv_str) {
-    return static_cast<const char*>(pre_conv_str);
-}
-std::string kpt::bstr_str_object::_comstr_to_string() {
-    return static_cast<const char*>(bstr);
-}
-
-kpt::wide_char_object::wide_char_object() {
-    const wchar_t* wct;
-}
-kpt::wide_char_object::wide_char_object(const std::string& value) {
-    wct = _string_to_wchar(value);
-}
-void kpt::wide_char_object::operator=(const wchar_t* value) {
-    wct = value;
-    return;
-}
-void kpt::wide_char_object::operator=(const std::string& value) {
-    wct = this->_string_to_wchar(value);
-    return;
-}
-kpt::wide_char_object::wide_char_object(const wchar_t* value) {
-    size_t len = wcslen(value) + 1; // 文字列の長さにNULL文字分を加える
-    wchar_t *w = new wchar_t[len]; // メモリ領域を確保
-    wcsncpy(w, value, len); // 文字列をコピー
-}
-
-kpt::wide_char_object::~wide_char_object() {
-}
-const wchar_t *kpt::wide_char_object::_string_to_wchar() {
-    return wct;
-}
-const wchar_t *kpt::wide_char_object::_string_to_wchar(const std::string& value) {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    std::wstring wstr = converter.from_bytes(value);
-    wct = wstr.c_str();
-    return wct;
-}
-std::string kpt::wide_char_object::_wchar_to_string(const wchar_t* value) {
-    std::wstring wstr = value;
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::string s = converter.to_bytes(wstr);
-    return s;
-}
-std::string kpt::wide_char_object::_wchar_to_string() {
-    std::wstring wstr = wct;
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::string s = converter.to_bytes(wstr);
-    return s;
-}
 
 
 
@@ -144,9 +65,7 @@ kpt::str::str() {
     std::string memory;
     memory = "\0";
 }
-kpt::str::operator str() const {
-    return *this;
-}
+
 /* 宣言時に代入値がstr型だった際の左辺コピーコンストラクタ */
 kpt::str::str(const str& value) {
     if (this != &value) {
@@ -204,9 +123,9 @@ kpt::str::operator const char*() const {
     return this->memory.c_str();
 }
 
-kpt::str::operator _bstr_t() const {
+kpt::str::operator BSTR() const {
     kpt::bstr_str_object b = memory;
-    return b._string_to_comstr();
+    return b._string_to_bstr();
 }
 kpt::str::operator const wchar_t*() const {
     kpt::wide_char_object w = kpt::str::memory;
@@ -216,9 +135,7 @@ kpt::str::operator std::wstring() const {
     kpt::wide_char_object w = kpt::str::memory;
     return w._string_to_wchar();
 }
-kpt::str::operator kpt::str() const {
-    return *this;
-}
+
 
 kpt::str::str(const std::string& value) {
     kpt::str::memory = value;
@@ -381,30 +298,30 @@ bool kpt::str::operator!=(PyObject* value) {
     }
 }
 
-kpt::str::str(const _bstr_t& value) {
+kpt::str::str(const BSTR& value) {
     kpt::bstr_str_object b;
-    kpt::str::memory = b._comstr_to_string(value);
+    kpt::str::memory = b._bstr_to_string(value);
 }
-kpt::str& kpt::str::operator=(const _bstr_t& value) {
+kpt::str& kpt::str::operator=(const BSTR& value) {
     kpt::str::memory = str(value).memory;
     return *this;
 }
-kpt::str kpt::str::operator+(const _bstr_t&  value) {
+kpt::str kpt::str::operator+(const BSTR&  value) {
     return kpt::str::memory + str(value).memory;
 }
-kpt::str& kpt::str::operator+=(const _bstr_t& value) {
+kpt::str& kpt::str::operator+=(const BSTR& value) {
     kpt::str::memory = kpt::str::memory + kpt::str(value).memory;
     return *this;
 }
 
-bool kpt::str::operator==(const _bstr_t& value) {
+bool kpt::str::operator==(const BSTR& value) {
     if (kpt::str::memory == kpt::str(value).memory) {
         return true;
     } else {
         return false;
     }
 }
-bool kpt::str::operator!=(const _bstr_t& value) {
+bool kpt::str::operator!=(const BSTR& value) {
     if (kpt::str::memory != kpt::str(value).memory) {
         return true;
     } else {
@@ -441,7 +358,7 @@ bool kpt::str::operator!=(const wchar_t* value) {
         return false;
     }
 }
-kpt::str::~str() {
+kpt::str::~str(){
 }
 
 std::string kpt::str::to_cstring() {
@@ -457,15 +374,20 @@ char kpt::str::operator[](int value) {
     return this->memory[value];
 }
 
-static int to_one_digit_int(char number) {
+int kpt::str::to_one_digit_int(char number) {
     kpt::str n = number;
     if (n.size() == 1) {
         return number - '0';
     } else {
-        return;
+        std::cerr << "<argument error> You have to pass a single digit number as an argument\n";
+        return -1;
     }
 }
 std::ostream& kpt::operator<< (std::ostream& stream, const kpt::str& value) {
     stream << value.memory; // 文字列の内容を出力
     return stream;
+}
+int main(int argc, char* argv[]) {
+    ;
+    return 0;
 }
