@@ -5,8 +5,7 @@
 
 // include gard
 #ifndef BSTRING_HPP
-#pragma comment(lib,"msvcrt.lib")
-#pragma comment(lib, "msvcprt.lib")
+
     #define BSTRING_HPP
     #include <windows.h>
     #include <cstring>

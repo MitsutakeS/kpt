@@ -1,12 +1,9 @@
-#ifndef GARD_STRING
-    #define GARD_STRING
-    #include <string>
-#else
-#endif
-
+#ifndef JSTRING_HPP
+#define JSTRING_HPP 1
 #if __has_include(<jni.h>)
 #define JNI_H
 #include <jni.h>
+#include <string>
 namespace kpt {
 /*
 javaの文字列 <==> C++文字列への相互変換
@@ -31,6 +28,5 @@ jni.hを使用しています
             std::string _jstring_to_string(const jstring& pre_conv_jstr);
     };
 }
-
-
-#endif
+#endif/* __has_include(<jni.h>) */
+#endif/* JSTRING_HPP */
