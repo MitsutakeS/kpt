@@ -1,0 +1,8 @@
+#if __has_include("str/str.hpp")
+    #include "str/str.hpp"
+#elif __has_include("kpt/str/str.hpp")
+    #include "kpt/str/str.hpp"
+#else
+    #error "include error- str.hpp is not found"
+#endif
+
