@@ -1,13 +1,20 @@
+#ifdef _MSC_VER
+#pragma comment(lib, "str.lib")
+#endif
 
 #ifndef STR_HPP /* include gard */
 /*
 #ifdef STR_HPP
     process
+#else
+    throw()
 #endif
 (sample)
 */
 #define STR_HPP 1
-
+#define SPACE "\x020"
+#define INDENT "\t"
+#define LF "\n"
 #define FILE_EXISTS ()
 #include "pstring.hpp"/* Python_string */
 #include "jstring.hpp"/* Javastring */
@@ -21,7 +28,7 @@ namespace kpt {
     using std::wcout;
     using std::endl;
     using std::cerr;
-    // BigBoss...
+    /* type kpt::str */
     class str {
         private:
             std::string memory;
@@ -92,6 +99,13 @@ namespace kpt {
             bool operator==(const wchar_t* value);
             bool operator!=(const wchar_t* value);
 
+            str(const long long int& value);
+            str& operator=(const long long int& value);
+            str operator+(const long long int& value);
+            str& operator+=(const long long int& value);
+            bool operator==(const long long int& value);
+            bool operator!=(const long long int& value);
+
             str(const int& value);
             str& operator=(const int& value);
             str operator+(const int& value);
@@ -113,6 +127,7 @@ namespace kpt {
             operator const wchar_t*() const;
             operator PyObject*() const;
             operator int() const;
+            operator long long int() const;
             operator std::u16string() const;
 
 
@@ -125,20 +140,16 @@ namespace kpt {
     };
     std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
 }
-/*
-print("a")        -> ok/ # a
-print("a") << "b" -> ok/ # ab
-print("") <<  "b" -> ok/ # b
-print(kpt::str var) << 
-*/
-class print {
+#define pend print()
+class typePrintObject {
     private:
-        kpt::str memory;
+        kpt::str strValue;
     public:
-        print();
-        print(const kpt::str& value);
-        ~print();
-        print& operator<<(const kpt::str& value);
-        print& operator<<(const print& value);
+        typePrintObject(const kpt::str& strValue);
+        ~typePrintObject();
+        typePrintObject& operator<<(const kpt::str& right_side);
+        typePrintObject& operator<<(const typePrintObject& right_side);
 };
+typePrintObject print(const kpt::str& Values);
+typePrintObject print();
 #endif
