@@ -133,6 +133,9 @@ namespace kpt {
 
             size_t size();
             size_t max_size();
+            std::string::const_iterator end();
+            char end_character();
+            bool is_end (char character_to_be_distinguished);
             std::string to_cstring();
 
             static int to_one_digit_int(char number);
@@ -141,6 +144,7 @@ namespace kpt {
     std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
 }
 #define pend print()
+// デフォルトのコンストラクタを持っていないので注意
 class typePrintObject {
     private:
         kpt::str strValue;
