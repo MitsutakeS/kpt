@@ -116,6 +116,13 @@ namespace kpt {
             bool operator==(const long double& value);
             bool operator!=(const long double& value);
 
+            str(const double& value);
+            str& operator=(const double& value);
+            str operator+(const double& value);
+            str& operator+=(const double& value);
+            bool operator==(const double& value);
+            bool operator!=(const double& value);
+
             str(const int& value);
             str& operator=(const int& value);
             str operator+(const int& value);
@@ -140,6 +147,7 @@ namespace kpt {
             operator long long int() const;
             operator std::u16string() const;
             operator long double() const;
+            operator double() const;
 
             size_t size();
             size_t max_size();
