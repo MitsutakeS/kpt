@@ -149,6 +149,7 @@ namespace kpt {
             operator long double() const;
             operator double() const;
 
+
             size_t size();
             size_t max_size();
             std::string::const_iterator end();
@@ -156,6 +157,7 @@ namespace kpt {
             bool is_end (char character_to_be_distinguished);
             std::string to_cstring();
             const char* to_char();
+            double to_double();
 
             static int to_one_digit_int(char number);
             friend std::ostream& operator<< (std::ostream& stream, const str& value);
