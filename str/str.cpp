@@ -370,6 +370,43 @@ kpt::str::operator long long int() const {
     return std::stoll(memory);
 }
 
+
+
+kpt::str::str(const long double& value) {
+    kpt::str::memory = std::to_string(value);
+}
+kpt::str& kpt::str::operator=(const long double& value) {
+    kpt::str::memory = std::to_string(value);
+    return *this;
+}
+kpt::str kpt::str::operator+(const long double& value) {
+    return kpt::str::memory + std::to_string(value);
+}
+kpt::str& kpt::str::operator+=(const long double& value) {
+    kpt::str::memory = kpt::str::memory + std::to_string(value);
+    return *this;
+}
+bool kpt::str::operator==(const long double& value) {
+    if (kpt::str::memory == kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+bool kpt::str::operator!=(const long double& value) {
+    if (kpt::str::memory != kpt::str(value).memory) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+kpt::str::operator long double() const {
+    return std::stold(memory);
+}
+
+
+
 kpt::str::str(const std::u16string& value) {
     kpt::u16_str_object u;
     kpt::str::memory = u._u16_to_string(value);
@@ -412,6 +449,9 @@ kpt::str::~str(){
 std::string kpt::str::to_cstring() {
     return this->memory;
 }
+const char* kpt::str::to_char() {
+    return this->memory.c_str();
+}
 size_t kpt::str::size() {
     return this->memory.size();
 }
@@ -445,28 +485,7 @@ int kpt::str::to_one_digit_int(char number) {
         return -1;
     }
 }
-typePrintObject::typePrintObject(const kpt::str& strValue) {
-}
-typePrintObject::~typePrintObject() {
-    std::cout << this->strValue;
-}
-typePrintObject& typePrintObject::operator<<(const kpt::str& right_side) {
-    this->strValue += right_side;
-    return *this;
-}
-typePrintObject& typePrintObject::operator<<(const typePrintObject& right_side) {
-    this->strValue += right_side.strValue;
-    return *this;
-}
 
-typePrintObject print(const kpt::str& Values) {
-    typePrintObject p(Values);
-    return p;
-}
-typePrintObject print() {
-    typePrintObject p(LF);
-    return p;
-}
 std::ostream& kpt::operator<< (std::ostream& stream, const kpt::str& value) {
     stream << value.memory; // 文字列の内容を出力
     return stream;

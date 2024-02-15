@@ -15,6 +15,9 @@
 #define SPACE "\x020"
 #define INDENT "\t"
 #define LF "\n"
+#define NULL_COMMAND "\0"
+#define ZERO_POINT 0
+
 #define FILE_EXISTS ()
 #include "pstring.hpp"/* Python_string */
 #include "jstring.hpp"/* Javastring */
@@ -36,7 +39,7 @@ namespace kpt {
             str();
             ~str();
             char operator[](int value);
-
+/* jniが環境に無ければコンパイルしない */
 #ifdef JNI_H
 
             str(const jstring& value);
@@ -106,6 +109,13 @@ namespace kpt {
             bool operator==(const long long int& value);
             bool operator!=(const long long int& value);
 
+            str(const long double& value);
+            str& operator=(const long double& value);
+            str operator+(const long double& value);
+            str& operator+=(const long double& value);
+            bool operator==(const long double& value);
+            bool operator!=(const long double& value);
+
             str(const int& value);
             str& operator=(const int& value);
             str operator+(const int& value);
@@ -129,7 +139,7 @@ namespace kpt {
             operator int() const;
             operator long long int() const;
             operator std::u16string() const;
-
+            operator long double() const;
 
             size_t size();
             size_t max_size();
@@ -137,23 +147,12 @@ namespace kpt {
             char end_character();
             bool is_end (char character_to_be_distinguished);
             std::string to_cstring();
+            const char* to_char();
 
             static int to_one_digit_int(char number);
             friend std::ostream& operator<< (std::ostream& stream, const str& value);
     };
     std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
 }
-#define pend print()
-// デフォルトのコンストラクタを持っていないので注意
-class typePrintObject {
-    private:
-        kpt::str strValue;
-    public:
-        typePrintObject(const kpt::str& strValue);
-        ~typePrintObject();
-        typePrintObject& operator<<(const kpt::str& right_side);
-        typePrintObject& operator<<(const typePrintObject& right_side);
-};
-typePrintObject print(const kpt::str& Values);
-typePrintObject print();
+
 #endif
