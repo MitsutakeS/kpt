@@ -11,5 +11,5 @@
 #elif __has_include("kpt/num/num.hpp")
     #include "kpt/num/num.hpp"
 #else
-    #error "include error- str.hpp is not found"
+    #error "include error- num.hpp is not found"
 #endif
