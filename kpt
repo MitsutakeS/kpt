@@ -6,3 +6,10 @@
     #error "include error- str.hpp is not found"
 #endif
 
+#if __has_include("num/num.hpp")
+    #include "num/num.hpp"
+#elif __has_include("kpt/num/num.hpp")
+    #include "kpt/num/num.hpp"
+#else
+    #error "include error- str.hpp is not found"
+#endif
