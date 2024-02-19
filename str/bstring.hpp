@@ -1,17 +1,14 @@
-#ifndef GARD_STRING
-    #define GARD_STRING
-    #include <string>
-#endif
+
+#include <string>
 
 // include gard
 #ifndef BSTRING_HPP
-
-    #define BSTRING_HPP
-    #include <windows.h>
-    #include <cstring>
-    #include <locale>
-    #include <codecvt>
-    #include <stdlib.h>
+#define BSTRING_HPP
+#   include <windows.h>
+#   include <cstring>
+#   include <locale>
+#   include <codecvt>
+#   include <stdlib.h>
 
 namespace kpt {
     class wide_char_object {

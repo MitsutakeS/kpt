@@ -1,5 +1,5 @@
 #ifdef _MSC_VER
-#pragma comment(lib, "str.lib")
+#   pragma comment(lib, "str.lib")
 #endif
 
 #ifndef STR_HPP /* include gard */
@@ -19,9 +19,9 @@
 #define ZERO_POINT 0
 
 #define FILE_EXISTS ()
-#include <pstring.hpp>/* Python_string */
-#include <jstring.hpp>/* Javastring */
-#include <bstring.hpp>/* wide_string-char and utf-string*/
+#include "pstring.hpp"/* Python_string */
+#include "jstring.hpp"/* Javastring */
+#include "bstring.hpp"/* wide_string-char and utf-string*/
 /* Jstring or Bstring contains #include string */
 
 #include <iostream>
@@ -168,4 +168,4 @@ namespace kpt {
     std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
 }
 
-#endif
+#endif/* !STR_HPP */
