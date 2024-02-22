@@ -26,4 +26,4 @@ namespace kpt {
     LLint random();
     LLint random(LLint min, LLint max);
 }
-#endif
+#endif /* !NUM_HPP */
