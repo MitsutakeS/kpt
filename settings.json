@@ -1,0 +1,1 @@
+        "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt -L \"$Env:JAVA_HOME/lib\" -L \"$Env:KPT_HOME/lib\" -L \"$Env:KPT_HOME/include/python310/libs\" -lstr -lpython310 -ljvm -loleaut32 -std=c++20 && $dir$fileNameWithoutExt",
