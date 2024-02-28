@@ -1,5 +1,25 @@
+/* 実行できない場合のアドバイス */
+/* 実行するときにオプションに以下のコマンドを追加する */
+
+/* -L "./kpt/lib" -lstr -lpython310 -loleaut32*/
+
+/* Javaの環境がある方は別途 -ljvmが必要です*/
+/* また、g++が必須であり、C++20推奨です */
+/* g++ main.cpp -o main.exe -I "./kpt/include" -L ".kpt/lib" -lstr -lpython310 -loleaut32*/
+
+/* kptディレクトリを%KPT_HOME%に、kpt/binディレクトリを環境変数に追加すると便利です */
+
+/* "chcp 65001"をsetting.jsonの"PowerShell":{"args": [here]} hereの部分に追加してください */
+/* そこまでできたら以下のようにしてもcode runnerが起動します */
+/* "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt -L \"$Env:JAVA_HOME/lib\" -L \"$Env:KPT_HOME/lib\" -L \"$Env:KPT_HOME/include/python310/libs\" -lstr -lpython310 -ljvm -loleaut32 -std=c++20 && $dir$fileNameWithoutExt", */
+/* ご参考までに。 */
+
+/* もし環境がVisualStudioだったらpragmaする */
 #ifdef _MSC_VER
 #   pragma comment(lib, "str.lib")
+#   pragma comment(lib, "jvm.lib")
+#   pragma comment(lib, "python310.lib")
+#   pragma comment(lib, "loleaut32")
 #endif
 
 #ifndef STR_HPP /* include gard */
@@ -23,7 +43,8 @@
 #include "jstring.hpp"/* Javastring */
 #include "bstring.hpp"/* wide_string-char and utf-string*/
 /* Jstring or Bstring contains #include string */
-
+#include <map>
+#include <vector>
 #include <iostream>
 
 namespace kpt {
@@ -32,6 +53,7 @@ namespace kpt {
     using std::endl;
     using std::cerr;
     /* type kpt::str */
+
     class str {
         private:
             std::string memory;
@@ -51,78 +73,117 @@ namespace kpt {
             bool operator!=(const jstring& value);
 #endif
             str(const str& value);
-
             str& operator=(const str& value);
             str operator+(const str& value);
             str& operator+=(const str& value);
             bool operator==(const str& value);
             bool operator!=(const str& value);
+            bool operator< (const str& value);
+            bool operator> (const str& value);
+            bool operator>=(const str& value);
+            bool operator<=(const str& value);
 
             str(const std::string& value);
-            str& operator=(const std::string& value);
-            str operator+(const std::string& value);
+            str& operator= (const std::string& value);
+            str  operator+ (const std::string& value);
             str& operator+=(const std::string& value);
             bool operator==(const std::string& value);
             bool operator!=(const std::string& value);
+            bool operator< (const std::string& value);
+            bool operator> (const std::string& value);
+            bool operator>=(const std::string& value);
+            bool operator<=(const std::string& value);
 
             str(const char* value);
             operator char const*() const;
-            str& operator=(char const*value);
-            str operator+(char const*value);
+            str& operator= (char const*value);
+            str  operator+ (char const*value);
             str& operator+=(char const*value);
             bool operator==(char const*value);
             bool operator!=(char const*value);
+            bool operator< (char const* value);
+            bool operator> (char const* value);
+            bool operator>=(char const* value);
+            bool operator<=(char const* value);
 
             str(const char& value);
             operator const char&() const;
-            str& operator=(const char& value);
-            str operator +(const char& value);
+            str& operator= (const char& value);
+            str operator + (const char& value);
             str& operator+=(const char& value);
             bool operator==(const char& value);
             bool operator!=(const char& value);
+            bool operator< (const char& value);
+            bool operator> (const char& value);
+            bool operator>=(const char& value);
+            bool operator<=(const char& value);
 
             str(PyObject* value);
-            str& operator=(PyObject* value);
-            str operator+(PyObject* value);
+            str& operator= (PyObject* value);
+            str  operator+ (PyObject* value);
             str& operator+=(PyObject* value);
             bool operator==(PyObject* value);
             bool operator!=(PyObject* value);
+            bool operator< (PyObject* value);
+            bool operator> (PyObject* value);
+            bool operator>=(PyObject* value);
+            bool operator<=(PyObject* value);
 
             str(const BSTR& value);
-            str& operator=(const BSTR& value);
-            str operator+(const BSTR&  value);
+            str& operator= (const BSTR& value);
+            str  operator+ (const BSTR& value);
             str& operator+=(const BSTR& value);
             bool operator==(const BSTR& value);
             bool operator!=(const BSTR& value);
+            bool operator< (const BSTR& value);
+            bool operator> (const BSTR& value);
+            bool operator>=(const BSTR& value);
+            bool operator<=(const BSTR& value);
 
             /* wchar_tよ永遠に・・・ */
             str(const wchar_t* value);
-            str& operator=(const wchar_t* value);
-            str operator+(const wchar_t* value);
+            str& operator= (const wchar_t* value);
+            str  operator+ (const wchar_t* value);
             str& operator+=(const wchar_t* value);
             bool operator==(const wchar_t* value);
             bool operator!=(const wchar_t* value);
+            bool operator< (const wchar_t* value);
+            bool operator> (const wchar_t* value);
+            bool operator>=(const wchar_t* value);
+            bool operator<=(const wchar_t* value);
 
             str(const long long int& value);
-            str& operator=(const long long int& value);
-            str operator+(const long long int& value);
+            str& operator= (const long long int& value);
+            str  operator+ (const long long int& value);
             str& operator+=(const long long int& value);
             bool operator==(const long long int& value);
             bool operator!=(const long long int& value);
+            bool operator< (const long long int& value);
+            bool operator> (const long long int& value);
+            bool operator>=(const long long int& value);
+            bool operator<=(const long long int& value);
 
             str(const long double& value);
-            str& operator=(const long double& value);
-            str operator+(const long double& value);
+            str& operator= (const long double& value);
+            str  operator+ (const long double& value);
             str& operator+=(const long double& value);
             bool operator==(const long double& value);
             bool operator!=(const long double& value);
+            bool operator< (const long double& value);
+            bool operator> (const long double& value);
+            bool operator>=(const long double& value);
+            bool operator<=(const long double& value);
 
             str(const double& value);
-            str& operator=(const double& value);
-            str operator+(const double& value);
+            str& operator= (const double& value);
+            str  operator+ (const double& value);
             str& operator+=(const double& value);
             bool operator==(const double& value);
             bool operator!=(const double& value);
+            bool operator< (const double& value);
+            bool operator> (const double& value);
+            bool operator>=(const double& value);
+            bool operator<=(const double& value);
 
             str(const int& value);
             str& operator=(const int& value);
@@ -130,6 +191,10 @@ namespace kpt {
             str& operator+=(const int& value);
             bool operator==(const int& value);
             bool operator!=(const int& value);
+            bool operator< (const int& value);
+            bool operator> (const int& value);
+            bool operator>=(const int& value);
+            bool operator<=(const int& value);
 
             str(const std::u16string& value);
             str& operator=(const std::u16string& value);
@@ -137,10 +202,21 @@ namespace kpt {
             str& operator+=(const std::u16string& value);
             bool operator==(const std::u16string& value);
             bool operator!=(const std::u16string& value);
+            bool operator< (const std::u16string& value);
+            bool operator> (const std::u16string& value);
+            bool operator>=(const std::u16string& value);
+            bool operator<=(const std::u16string& value);
 
-            /* char16_t の追加を忘れずに */
-            /* わすれてたぁああ！また今度やろ（　＾ω＾）・・・ */
-
+            str(const char16_t *value);
+            str& operator= (const char16_t* value);
+            str  operator+ (const char16_t* value);
+            str& operator+=(const char16_t* value);
+            bool operator==(const char16_t* value);
+            bool operator!=(const char16_t* value);
+            bool operator< (const char16_t* value);
+            bool operator> (const char16_t* value);
+            bool operator>=(const char16_t* value);
+            bool operator<=(const char16_t* value);
 
             operator std::string() const;
             operator std::wstring() const;
@@ -152,19 +228,21 @@ namespace kpt {
             operator std::u16string() const;
             operator long double() const;
             operator double() const;
+            operator const char16_t*() const;
 
-
+            const char* data();
             size_t size();
             size_t max_size();
             std::string::const_iterator end();
-            char end_character();
+            char get_end_character();
             bool is_end (char character_to_be_distinguished);
+            bool is_null();
             std::string to_cstring();
             const char* to_char();
             double to_double();
-
             static int to_one_digit_int(char number);
             friend std::ostream& operator<< (std::ostream& stream, const str& value);
+            kpt::str& swap(kpt::str *value);
     };
     std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
 }

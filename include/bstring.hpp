@@ -72,4 +72,4 @@ namespace kpt {
             std::string _int_to_string(const int& value);
     };
 }
-#endif
+#endif /* !BSTRING_HPP */
