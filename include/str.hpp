@@ -19,10 +19,25 @@
 #   pragma comment(lib, "str.lib")
 #   pragma comment(lib, "jvm.lib")
 #   pragma comment(lib, "python310.lib")
-#   pragma comment(lib, "loleaut32")
+#   pragma comment(lib, "loleaut32.dll")
 #endif
 
 #ifndef STR_HPP /* include gard */
+
+#ifndef EXPORT
+#   if defined(_MSC_VER) // Microsoft
+#       define EXPORT __declspec(dllexport)
+#       define IMPORT __declspec(dllimport)
+#   elif defined(__GNUC__) // GCC
+#       define EXPORT __attribute__((visibility("default")))
+#       define IMPORT
+#   else
+#       define EXPORT
+#       define IMPORT
+#       pragma warning Unknown dynamic link import/export semantics.
+#   endif /* !_MSC_VER */
+#endif /* !EXPORT */
+
 /*
 #ifdef STR_HPP
     process
@@ -48,13 +63,10 @@
 #include <iostream>
 
 namespace kpt {
-    using std::cout;
-    using std::wcout;
-    using std::endl;
-    using std::cerr;
-    /* type kpt::str */
 
-    class str {
+    /* type kpt::str */
+    /* const may reject references to member functions */
+    class EXPORT str {
         private:
             std::string memory;
         public:
@@ -78,7 +90,7 @@ namespace kpt {
             str& operator+=(const str& value);
             bool operator==(const str& value);
             bool operator!=(const str& value);
-            bool operator< (const str& value);
+            bool operator< (const str& value) const;
             bool operator> (const str& value);
             bool operator>=(const str& value);
             bool operator<=(const str& value);
@@ -186,8 +198,8 @@ namespace kpt {
             bool operator<=(const double& value);
 
             str(const int& value);
-            str& operator=(const int& value);
-            str operator+(const int& value);
+            str& operator= (const int& value);
+            str  operator+ (const int& value);
             str& operator+=(const int& value);
             bool operator==(const int& value);
             bool operator!=(const int& value);
@@ -237,14 +249,16 @@ namespace kpt {
             char get_end_character();
             bool is_end (char character_to_be_distinguished);
             bool is_null();
-            std::string to_cstring();
+            const std::string to_cstring();
             const char* to_char();
             double to_double();
             static int to_one_digit_int(char number);
             friend std::ostream& operator<< (std::ostream& stream, const str& value);
+            static const std::string to_cstring(const kpt::str& string);
+            static const char* to_char(const kpt::str& string);
             kpt::str& swap(kpt::str *value);
     };
-    std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
-}
 
+    EXPORT std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
+}
 #endif/* !STR_HPP */

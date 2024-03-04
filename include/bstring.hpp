@@ -10,8 +10,22 @@
 #   include <codecvt>
 #   include <stdlib.h>
 
+#ifndef EXPORT
+#   if defined(_MSC_VER) // Microsoft
+#       define EXPORT __declspec(dllexport)
+#       define IMPORT __declspec(dllimport)
+#   elif defined(__GNUC__) // GCC
+#       define EXPORT __attribute__((visibility("default")))
+#       define IMPORT
+#   else
+#       define EXPORT
+#       define IMPORT
+#       pragma warning Unknown dynamic link import/export semantics.
+#   endif /* !_MSC_VER */
+#endif /* !EXPORT */
+
 namespace kpt {
-    class wide_char_object {
+    class EXPORT wide_char_object {
         private:
             const wchar_t* wct;
         public:
@@ -26,7 +40,7 @@ namespace kpt {
             std::string _wchar_to_string();
             std::string _wchar_to_string(const wchar_t* value);
     };
-    class bstr_str_object {
+    class EXPORT bstr_str_object {
         private:
             BSTR bstr;
         public:
@@ -41,7 +55,7 @@ namespace kpt {
             std::string _bstr_to_string();
             std::string _bstr_to_string(const BSTR& pre_conv_str);
     };
-    class u16_str_object {
+    class EXPORT u16_str_object {
         private:
             std::u16string u16;
         public:
@@ -56,7 +70,7 @@ namespace kpt {
             std::string _u16_to_string();
             std::string _u16_to_string(const std::u16string& value);
     };
-    class int_str_object {
+    class EXPORT int_str_object {
         private:
             int integer;
         public:
