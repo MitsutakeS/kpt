@@ -14,6 +14,8 @@
 /* "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt -L \"$Env:JAVA_HOME/lib\" -L \"$Env:KPT_HOME/lib\" -L \"$Env:KPT_HOME/include/python310/libs\" -lstr -lpython310 -ljvm -loleaut32 -std=c++20 && $dir$fileNameWithoutExt", */
 /* ご参考までに。 */
 
+/* For Windows, For C++20, For mingw64 and g++ */
+
 /* もし環境がVisualStudioだったらpragmaする */
 #ifdef _MSC_VER
 #   pragma comment(lib, "str.lib")
@@ -46,6 +48,7 @@
 #endif
 (sample)
 */
+
 #define STR_HPP 1
 #define SPACE "\x020"
 #define INDENT "\t"
@@ -54,6 +57,9 @@
 #define ZERO_POINT 0
 
 #define FILE_EXISTS ()
+
+#define KPT(x) kpt::str(x)
+
 #include "pstring.hpp"/* Python_string */
 #include "jstring.hpp"/* Javastring */
 #include "bstring.hpp"/* wide_string-char and utf-string*/
@@ -219,6 +225,18 @@ namespace kpt {
             bool operator>=(const std::u16string& value);
             bool operator<=(const std::u16string& value);
 
+
+            str(const std::u8string& value);
+            str& operator=(const std::u8string& value);
+            str operator+(const std::u8string& value);
+            str& operator+=(const std::u8string& value);
+            bool operator==(const std::u8string& value);
+            bool operator!=(const std::u8string& value);
+            bool operator< (const std::u8string& value);
+            bool operator> (const std::u8string& value);
+            bool operator>=(const std::u8string& value);
+            bool operator<=(const std::u8string& value);
+
             str(const char16_t *value);
             str& operator= (const char16_t* value);
             str  operator+ (const char16_t* value);
@@ -230,17 +248,32 @@ namespace kpt {
             bool operator>=(const char16_t* value);
             bool operator<=(const char16_t* value);
 
+            str(const char8_t* value);
+            str& operator= (const char8_t* value);
+            str  operator+ (const char8_t* value);
+            str& operator+=(const char8_t* value);
+            bool operator==(const char8_t* value);
+            bool operator!=(const char8_t* value);
+            bool operator< (const char8_t* value);
+            bool operator> (const char8_t* value);
+            bool operator>=(const char8_t* value);
+            bool operator<=(const char8_t* value);
+
             operator std::string() const;
             operator std::wstring() const;
             operator BSTR() const;
             operator const wchar_t*() const;
             operator PyObject*() const;
+
             operator int() const;
             operator long long int() const;
-            operator std::u16string() const;
             operator long double() const;
             operator double() const;
+
+            operator const std::u16string() const;
             operator const char16_t*() const;
+            operator const std::u8string() const;
+            operator const char8_t*() const;
 
             const char* data();
             size_t size();
@@ -249,6 +282,9 @@ namespace kpt {
             char get_end_character();
             bool is_end (char character_to_be_distinguished);
             bool is_null();
+            const char8_t* to_u8char();
+            const char8_t* to_u8char(const kpt::str& value);
+            const std::u16string to_u16string();
             const std::string to_cstring();
             const char* to_char();
             double to_double();

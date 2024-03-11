@@ -1,28 +1,18 @@
 
-#include <string>
+
 
 // include gard
 #ifndef BSTRING_HPP
 #define BSTRING_HPP
+
 #   include <windows.h>
 #   include <cstring>
 #   include <locale>
 #   include <codecvt>
 #   include <stdlib.h>
+#   include <string>
 
-#ifndef EXPORT
-#   if defined(_MSC_VER) // Microsoft
-#       define EXPORT __declspec(dllexport)
-#       define IMPORT __declspec(dllimport)
-#   elif defined(__GNUC__) // GCC
-#       define EXPORT __attribute__((visibility("default")))
-#       define IMPORT
-#   else
-#       define EXPORT
-#       define IMPORT
-#       pragma warning Unknown dynamic link import/export semantics.
-#   endif /* !_MSC_VER */
-#endif /* !EXPORT */
+#   include "define.hpp"/* EXPORT */
 
 namespace kpt {
     class EXPORT wide_char_object {
@@ -69,6 +59,22 @@ namespace kpt {
             std::u16string _string_to_u16(const std::string& value);
             std::string _u16_to_string();
             std::string _u16_to_string(const std::u16string& value);
+    };
+    class EXPORT u8_str_object {
+        private:
+            std::u8string u8;
+        public:
+            u8_str_object();
+            u8_str_object(const std::u8string& value);
+            u8_str_object(const std::string& value);
+            ~u8_str_object();
+            void operator=(const std::u8string& value);
+            void operator=(const std::string &value);
+
+            std::u8string _string_to_u8();
+            std::u8string _string_to_u8(const std::string& value);
+            std::string _u8_to_string();
+            std::string _u8_to_string(const std::u8string& value);
     };
     class EXPORT int_str_object {
         private:
