@@ -1,19 +1,13 @@
 /* 実行できない場合のアドバイス */
-/* 実行するときにオプションに以下のコマンドを追加する */
 
-/* -L "./kpt/lib" -lstr -lpython310 -loleaut32*/
+/* 1. "chcp 65001"をsetting.jsonの"PowerShell":{"args": [here]} hereの部分に追加してください */
+/* 2. kptディレクトリを%KPT_HOME%に設定後、kpt/binディレクトリを環境変数Pathに追加します（推奨） */
 
-/* Javaの環境がある方は別途 -ljvmが必要です*/
-/* また、g++が必須であり、C++20推奨です */
-/* g++ main.cpp -o main.exe -I "./kpt/include" -L ".kpt/lib" -lstr -lpython310 -loleaut32*/
+/* cd your_directory;if ($?) {g++ your_filename -o your_exe_filename -L "$env:KPT_HOME/bin" -lstr} */
 
-/* kptディレクトリを%KPT_HOME%に、kpt/binディレクトリを環境変数に追加すると便利です */
+/* 以上で実行できるかと思います。 */
 
-/* "chcp 65001"をsetting.jsonの"PowerShell":{"args": [here]} hereの部分に追加してください */
-/* そこまでできたら以下のようにしてもcode runnerが起動します */
-/* "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt -L \"$Env:JAVA_HOME/lib\" -L \"$Env:KPT_HOME/lib\" -L \"$Env:KPT_HOME/include/python310/libs\" -lstr -lpython310 -ljvm -loleaut32 -std=c++20 && $dir$fileNameWithoutExt", */
-/* ご参考までに。 */
-
+/* g++が必須であり、C++20推奨です。OSはWindowsのみサポートします */
 /* For Windows, For C++20, For mingw64 and g++ */
 
 /* もし環境がVisualStudioだったらpragmaする */
@@ -21,52 +15,51 @@
 #   pragma comment(lib, "str.lib")
 #   pragma comment(lib, "jvm.lib")
 #   pragma comment(lib, "python310.lib")
-#   pragma comment(lib, "loleaut32.dll")
+#   pragma comment(lib, "oleaut32.dll")
 #endif
 
 #ifndef STR_HPP /* include gard */
-
-#ifndef EXPORT
-#   if defined(_MSC_VER) // Microsoft
-#       define EXPORT __declspec(dllexport)
-#       define IMPORT __declspec(dllimport)
-#   elif defined(__GNUC__) // GCC
-#       define EXPORT __attribute__((visibility("default")))
-#       define IMPORT
-#   else
-#       define EXPORT
-#       define IMPORT
-#       pragma warning Unknown dynamic link import/export semantics.
-#   endif /* !_MSC_VER */
-#endif /* !EXPORT */
+#define STR_HPP 1
 
 /*
-#ifdef STR_HPP
-    process
-#else
-    throw()
-#endif
-(sample)
+    < Ja >
+    python.hpp, jni.h, windows.h
+    これらのヘッダファイルは-Lオプションを再度つけなくてもkpt::strを使用できるよう敢えて省略しています。
+    < En >
+    python.hpp, jni.h, windows.h
+    These header files have been omitted so that kpt::str can be used without the -L option again.
 */
 
-#define STR_HPP 1
-#define SPACE "\x020"
-#define INDENT "\t"
-#define LF "\n"
-#define NULL_COMMAND "\0"
-#define ZERO_POINT 0
+#include <string> /* std::string, std::wstring, std::u16string, std::u8string */
+#include <iostream>
 
-#define FILE_EXISTS ()
-
-#define KPT(x) kpt::str(x)
-
+#include "define.hpp"/* dllexport */
 #include "pstring.hpp"/* Python_string */
 #include "jstring.hpp"/* Javastring */
 #include "bstring.hpp"/* wide_string-char and utf-string*/
-/* Jstring or Bstring contains #include string */
-#include <map>
-#include <vector>
-#include <iostream>
+
+#define SPACE "\x020"
+#define INDENT "\t"
+
+#ifndef LF
+#   define LF "\n"
+#endif /* !LF */
+
+#ifndef OP
+#   define OP std::cout
+#endif /* !OP */
+
+#ifndef NULL_COMMAND
+#   define NULL_COMMAND "\000"
+#endif /* !NULL_COMMAND */
+
+#ifndef ZERO_POINT
+#   define ZERO_POINT 0
+#endif
+
+#ifndef KPT
+#   define KPT(x) kpt::str(x)
+#endif
 
 namespace kpt {
 
@@ -279,7 +272,9 @@ namespace kpt {
             size_t size();
             size_t max_size();
             std::string::const_iterator end();
-            char get_end_character();
+            const char& front();
+            const char& back();
+            str substr(std::size_t __pos, std::size_t __n) const;
             bool is_end (char character_to_be_distinguished);
             bool is_null();
             const char8_t* to_u8char();

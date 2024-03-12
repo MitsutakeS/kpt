@@ -12,3 +12,10 @@
 #   endif /* !_MSC_VER */
 #endif /* !EXPORT */
 
+#ifndef elementsof
+#   define elementsof(x) (sizeof(x) / sizeof((x)[0]))
+#endif /* !elementsof */
+
+#ifndef FILE_EXISTS
+#   define FILE_EXISTS ()
+#endif /* !FILE_EXISTS */
