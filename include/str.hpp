@@ -31,7 +31,10 @@
 */
 
 #include <string> /* std::string, std::wstring, std::u16string, std::u8string */
-#include <iostream>
+#include <iostream> /* std::ostream */
+#include <fstream> /* std::ifstream */
+#include <regex> /* std::regex */
+#include <vector>
 
 #include "define.hpp"/* dllexport */
 #include "pstring.hpp"/* Python_string */
@@ -71,7 +74,7 @@ namespace kpt {
         public:
             str();
             ~str();
-            char operator[](int value);
+            char operator[](std::size_t value);
 /* jniが環境に無ければコンパイルしない */
 #ifdef JNI_H
 
@@ -252,7 +255,7 @@ namespace kpt {
             bool operator>=(const char8_t* value);
             bool operator<=(const char8_t* value);
 
-            operator std::string() const;
+            operator std::string();
             operator std::wstring() const;
             operator BSTR() const;
             operator const wchar_t*() const;
@@ -267,10 +270,15 @@ namespace kpt {
             operator const char16_t*() const;
             operator const std::u8string() const;
             operator const char8_t*() const;
-
+            void push_back(char __c);
+            kpt::str append(std::string value);
+            void clear();
+            const char& at(char value);
             const char* data();
+            std::size_t length();
             size_t size();
             size_t max_size();
+            std::string::const_iterator begin();
             std::string::const_iterator end();
             const char& front();
             const char& back();
@@ -285,11 +293,16 @@ namespace kpt {
             double to_double();
             static int to_one_digit_int(char number);
             friend std::ostream& operator<< (std::ostream& stream, const str& value);
+            friend std::ifstream& operator>> (std::ifstream& stream, const str& value);
             static const std::string to_cstring(const kpt::str& string);
             static const char* to_char(const kpt::str& string);
             kpt::str& swap(kpt::str *value);
+            std::string insert(int place, std::string value);
+            std::vector<kpt::str> split(kpt::str& input_value, std::string delimiter);
+            std::vector<kpt::str> split(std::string delimiter);
     };
 
     EXPORT std::ostream& operator<< (std::ostream& stream, const kpt::str& value);
+    EXPORT std::ifstream& operator>> (std::ifstream& stream, const kpt::str& value);
 }
 #endif/* !STR_HPP */

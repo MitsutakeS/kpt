@@ -15,7 +15,7 @@
 #   endif /* !_MSC_VER */
 #endif /* !EXPORT */
 
-#include "./json/include/nlohmann/json.hpp"
+#include "json/include/nlohmann/json.hpp"
 #include "str.hpp"
 #include <map>
 #include <vector>
